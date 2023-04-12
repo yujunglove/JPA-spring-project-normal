@@ -40,6 +40,8 @@ public class MenuService {
 		return modelMapper.map(menuRepository.findMenuByCode(entityManager, menuCode),MenuDTO.class);
 	}
 
+
+
 	public List<MenuDTO> findAllMenu() {
 
 
@@ -80,5 +82,28 @@ public class MenuService {
 		menuRepository.modifyMenu(entityManager, modelMapper.map(menu, Menu.class));
 
 	}
-	
+
+	//상태 변경 바꾸기
+	@Transactional
+	public void modifyMenuStatus(MenuDTO menu) {
+
+		menuRepository.modifyMenuStatus(entityManager, modelMapper.map(menu, Menu.class));
+
+	}
+
+	@Transactional
+	public void removeMenu(MenuDTO menu) {
+		// MenuDTO 객체를 Menu 엔티티로 매핑
+		menuRepository.removeMenu(entityManager,modelMapper.map(menu, Menu.class));
+	}
+
+	@Transactional
+	public List<MenuDTO> searchMenuByKeyword(String keyword) {
+		List<Menu> menuList = menuRepository.searchMenuByKeyword(entityManager, keyword);
+		return menuList.stream()
+				.map(menu -> modelMapper.map(menu, MenuDTO.class))
+				.collect(Collectors.toList());
+	}
+
+
 }

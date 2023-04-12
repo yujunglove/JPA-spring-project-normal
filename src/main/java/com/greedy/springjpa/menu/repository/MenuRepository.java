@@ -3,7 +3,9 @@ package com.greedy.springjpa.menu.repository;
 import javax.persistence.EntityManager;
 
 import com.greedy.springjpa.menu.dto.CategoryDTO;
+import com.greedy.springjpa.menu.dto.MenuDTO;
 import com.greedy.springjpa.menu.entity.Category;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import com.greedy.springjpa.menu.entity.Menu;
@@ -12,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
+
 public class MenuRepository {
 
 	//메뉴 코드대로 1개씩만 가져오기
@@ -22,6 +25,8 @@ public class MenuRepository {
 		//Menu라는 엔티티의 형태로 바꿔서 (entityManager 매핑)해서 반환(menuCode) 해 준다.
 	return entityManager.find(Menu.class, menuCode);
 	}
+
+
 
 	//메뉴 전체 조회하기
 	public List<Menu> findAllMenu(EntityManager entityManager) {
@@ -56,6 +61,32 @@ public class MenuRepository {
 		selectedMenu.setMenuName(menu.getMenuName());
 
 	}
+
+	public void modifyMenuStatus(EntityManager entityManager,Menu menu) {
+		Menu seletedMenuCode = entityManager.find(Menu.class,menu.getMenuCode());
+		seletedMenuCode.setOrderableStatus(menu.getOrderableStatus());
+	}
+
+	public void removeMenu(EntityManager entityManager, Menu menu) {
+		// EntityManager를 사용하여 메뉴 엔티티 조회
+		Menu selectedMenu = entityManager.find(Menu.class,menu.getMenuCode());
+
+		try{
+			entityManager.remove(selectedMenu);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public List<Menu> searchMenuByKeyword(EntityManager entityManager,String keyword) {
+		return entityManager.createQuery("SELECT m FROM Menu m WHERE m.menuName LIKE :keyword", Menu.class)
+				.setParameter("keyword", "%" + keyword + "%")
+				.getResultList();
+	}
+
+
+
 
 
 }

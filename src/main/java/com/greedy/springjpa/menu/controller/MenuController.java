@@ -82,6 +82,40 @@ public class MenuController {
 		return "redirect:/menu/" + menu.getMenuCode();
 
 	}
+	
+	@GetMapping("/remove")
+	public void removePage() {
+	}
+	
+	@PostMapping("/remove")
+	public String removeCodePage(@ModelAttribute MenuDTO menu) {
+
+		menuService.removeMenu(menu);
+		//수정되고 나서 수정 된 메뉴의 페이지로 이동한다.
+		return "redirect:/menu/list";
+
+	}
+
+	@GetMapping("/searchMenu")
+	public String searchMenu(@RequestParam(name = "keyword", defaultValue = "") String keyword, Model model)  {
+
+		List<MenuDTO> menuList = menuService.searchMenuByKeyword(keyword);
+		model.addAttribute("menuList", menuList);
+
+		return "menu/searchMenu";
+	}
+
+	@PostMapping("/searchMenu")
+	public String searchMenuPost(@RequestParam(name = "keyword", defaultValue = "") String keyword, Model model)  {
+		List<MenuDTO> menuList = menuService.searchMenuByKeyword(keyword);
+		model.addAttribute("menuList", menuList);
+		return "menu/list";
+	}
+
+
+
+
+
 
 
 }

@@ -13,5 +13,14 @@
   <input type="text" name="menuName"><br>
   <input type="submit" value="전송"><br>
 </form>
+
+  <h3 align="center">메뉴 상태 수정</h3>
+  <form action="/menu/modifyStatus" method="post">
+      <label>수정할 메뉴 번호 : </label>
+      <input type="number" name="menuCode"><br>
+      <label>수정할 상태 변경 Y,N: </label>
+      <input type="text" name="orderableStatus"><br>
+      <input type="submit" value="전송"><br>
+  </form>
 </body>
 </html>
