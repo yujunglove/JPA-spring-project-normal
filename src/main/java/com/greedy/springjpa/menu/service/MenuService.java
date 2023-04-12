@@ -2,7 +2,10 @@ package com.greedy.springjpa.menu.service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 
+import com.greedy.springjpa.menu.dto.CategoryDTO;
+import com.greedy.springjpa.menu.entity.Category;
 import com.greedy.springjpa.menu.entity.Menu;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -44,8 +47,38 @@ public class MenuService {
 
 		//스트림 사용
 		//map이 ()안에 결과를 수행해서 반환하는 것 다시 한번 스트림을 리스트로 바꿔주세요 collect List를 변화 시키겠습니다.
+		//스트림으로 가공한 다음 다시 리스트로 변환 시켰다.
+
 		return menuList.stream().map(menu -> modelMapper.map(menu,MenuDTO.class)).collect(Collectors.toList());
 	}
-	
+	public List<CategoryDTO> findAllCategory() {
+
+		List<Category> categoryList = menuRepository.findAllCategory(entityManager);
+
+		return categoryList.stream().map(category -> modelMapper.map(category,CategoryDTO.class)).collect(Collectors.toList());
+
+	}
+
+	//방금 Repository에서 정의한 메소드를 호출한다.
+	//비영속인 MenuDTO로 전달을 받는다.
+
+	/* 스프링에서는 트랜잭션 처리를 지원한다.
+	* 어노테이션으로 @Transactional을 선언하는 선언적 트랜잭션이 보편적인 방식이다.
+	* 클래스 레벨과 메소드 레벨에 작성 될 수 있고 클래스 레벨에 작성 시 하위 모든 메소드에 적용된다.
+	* 어노테이션이 선언 되면 메소드 호출 시 자동으로 프록시 객체가 생성되며 해당 프록시 객체는 정상 수행 여부에 따라
+	* commit, rollback 처리를 한다. *///전달되는 값이 메뉴엔티티가 될수 있도록 Map을 사용하여서 변환 한다.
+	@Transactional
+	public void registNewMenu(MenuDTO newMenu) {
+
+		menuRepository.registNewMenu(entityManager, modelMapper.map(newMenu, Menu.class));
+	}
+
+
+	@Transactional
+	public void modifyMenu(MenuDTO menu) {
+
+		menuRepository.modifyMenu(entityManager, modelMapper.map(menu, Menu.class));
+
+	}
 	
 }

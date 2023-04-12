@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>regist</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+</head>
+<body>
+
+<h3 align="center">신규 메뉴 등록</h3>
+
+<form action="/menu/regist" method="post">
+  <label>메뉴 이름 : </label><input type="text" name="menuName"><br>
+  <label>메뉴 가격 : </label><input type="number" name="menuPrice"><br>
+  <label>카테고리 : </label>
+  <select name="categoryCode" id="categoryCode">
+    <!--
+        카테고리 내용이 변화할 수 있다면 조회 해서 처리해야 하며
+        여기에서는 ajax로 처리
+     -->
+  </select><br>
+  <label>판매 상태 : </label>
+  <select name="orderableStatus">
+    <option value="Y">판매가능</option>
+    <option value="N">판매불가</option>
+  </select><br>
+  <input type="submit" value="전송">
+</form>
+
+<script>
+
+		$(function(){
+			$.ajax({
+				url : '/menu/category',
+				success : function(data) {
+					console.log(data);
+
+					let html = '';
+
+					for(let index in data) {
+						html += `<option value='${data[index].categoryCode}'>${data[index].categoryName}</option>`;
+					}
+
+					document.querySelector("#categoryCode").insertAdjacentHTML('beforeend', html);
+
+				},
+				error : function(xhr) {
+					console.log(xhr);
+				}
+			});
+		});
+
+	</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

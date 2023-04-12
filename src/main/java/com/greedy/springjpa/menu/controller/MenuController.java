@@ -1,13 +1,15 @@
 package com.greedy.springjpa.menu.controller;
 
+import com.greedy.springjpa.menu.dto.CategoryDTO;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import com.greedy.springjpa.menu.dto.MenuDTO;
 import com.greedy.springjpa.menu.service.MenuService;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/menu")
@@ -35,5 +37,51 @@ public class MenuController {
 		model.addAttribute("menu", menu);
 		return "menu/one";
 	}
+
+	@GetMapping("/list")
+	public  String findAllMenu(Model model){
+		//수행된 결과를
+		List<MenuDTO> menuList = menuService.findAllMenu();
+		//모델에 추가해주면
+		model.addAttribute("menuList",menuList);
+		//forwarding 했을 때 사용 할 수 있다.
+		return "menu/list";
+	}
+
+	@GetMapping("/regist")
+	public void registPage() {
+
+	}
+
+
+	@GetMapping(value="category", produces="application/json; charset=UTF-8")
+	@ResponseBody
+	public List<CategoryDTO> findCategoryList() {
+
+		return menuService.findAllCategory();
+	}
+
+	@PostMapping("/regist")
+	public String registMenu(@ModelAttribute MenuDTO newMenu) {
+
+		menuService.registNewMenu(newMenu);
+
+		return "redirect:/menu/list";
+	}
+	@GetMapping("/modify")
+	public void modifyPage() {
+
+	}
+
+	@PostMapping("/modify")
+	public String MenuModify(@ModelAttribute MenuDTO menu) {
+
+		menuService.modifyMenu(menu);
+
+		//수정되고 나서 수정 된 메뉴의 페이지로 이동한다.
+		return "redirect:/menu/" + menu.getMenuCode();
+
+	}
+
 
 }
